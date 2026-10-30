@@ -31,3 +31,15 @@ jobs:
         with:
           name: S24Camera-apk
           path: app/build/outputs/apk/release/*.apk
+
+      # Publie l'APK dans « Releases » (lien de téléchargement direct)
+      - name: Publier la release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cp app/build/outputs/apk/release/*.apk S24Camera.apk
+          TAG="build-${{ github.run_number }}"
+          gh release create "$TAG" S24Camera.apk --title "S24 Caméra $TAG" --notes "APK compilé automatiquement." --latest
+
+permissions:
+  contents: write
