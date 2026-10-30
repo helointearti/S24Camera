@@ -384,10 +384,12 @@ class MainActivity : AppCompatActivity() {
                 camera = provider.bindToLifecycle(this, selector, preview, ic)
                 imageCapture = ic
             } else {
+                // Résolution vidéo maximale proposée par la caméra en cours
+                // (8K si le téléphone l'expose aux applis, sinon 4K, etc.).
                 val recorder = Recorder.Builder()
                     .setQualitySelector(
                         QualitySelector.from(
-                            Quality.UHD,
+                            Quality.HIGHEST,
                             FallbackStrategy.lowerQualityOrHigherThan(Quality.FHD)
                         )
                     )
@@ -455,6 +457,7 @@ class MainActivity : AppCompatActivity() {
         btnFlash.alpha = 1f
 
         if (isFront) applyFrontZoom() else buildZoomChips()
+        refreshTopBar()
 
         cam.cameraInfo.zoomState.removeObservers(this)
         cam.cameraInfo.zoomState.observe(this) { zs ->
@@ -809,10 +812,23 @@ class MainActivity : AppCompatActivity() {
             if (timerSeconds == 0) android.graphics.Color.WHITE
             else ContextCompat.getColor(this, R.color.accent_yellow)
         )
-        btnRatio.text = if (mode == Mode.VIDEO) "9:16" else if (ratio43) "3:4" else "9:16"
-        btnRatio.alpha = if (mode == Mode.VIDEO) 0.4f else 1f
+        btnRatio.text = if (mode == Mode.VIDEO) videoResolutionLabel() else if (ratio43) "3:4" else "9:16"
+        btnRatio.alpha = 1f
         btnGrid.alpha = if (gridOn) 1f else 0.5f
         gridOverlay.visibility = if (gridOn) View.VISIBLE else View.GONE
+    }
+
+    /** Résolution vidéo réellement obtenue, ex. « 8K », « UHD », « FHD ». */
+    private fun videoResolutionLabel(): String {
+        val res = videoCapture?.resolutionInfo?.resolution ?: return "UHD"
+        val long = maxOf(res.width, res.height)
+        return when {
+            long >= 7680 -> "8K"
+            long >= 3840 -> "UHD"
+            long >= 1920 -> "FHD"
+            long >= 1280 -> "HD"
+            else -> "${minOf(res.width, res.height)}p"
+        }
     }
 
     private fun setRecordingUi(rec: Boolean) {
