@@ -41,6 +41,7 @@ import androidx.camera.core.Camera
 import androidx.camera.core.CameraInfo
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.CameraState
+import androidx.camera.core.DynamicRange
 import androidx.camera.core.FocusMeteringAction
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
@@ -820,8 +821,13 @@ class MainActivity : AppCompatActivity() {
 
     /** Résolution vidéo réellement obtenue, ex. « 8K », « UHD », « FHD ». */
     private fun videoResolutionLabel(): String {
-        val res = videoCapture?.resolutionInfo?.resolution ?: return "UHD"
-        val long = maxOf(res.width, res.height)
+        val info = camera?.cameraInfo ?: return "UHD"
+        val qualities = try {
+            Recorder.getVideoCapabilities(info).getSupportedQualities(DynamicRange.SDR)
+        } catch (e: Exception) { emptyList() }
+        val res = qualities.mapNotNull { QualitySelector.getResolution(info, it) }
+            .maxByOrNull { it.width.toLong() * it.height } ?: return "UHD"
+        val long: Int = maxOf(res.width, res.height)
         return when {
             long >= 7680 -> "8K"
             long >= 3840 -> "UHD"
