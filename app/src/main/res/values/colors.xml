@@ -1,0 +1,8 @@
+<resources>
+    <color name="launcher_bg">#FF1B1B1F</color>
+    <color name="pill_bg">#59000000</color>
+    <color name="chip_selected">#CC2A2A2E</color>
+    <color name="record_red">#FFE53935</color>
+    <color name="mode_inactive">#99FFFFFF</color>
+    <color name="accent_yellow">#FFFFC107</color>
+</resources>

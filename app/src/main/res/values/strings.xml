@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">S24 Caméra</string>
+    <string name="mode_photo">PHOTO</string>
+    <string name="mode_video">VIDÉO</string>
+    <string name="flash">Flash</string>
+    <string name="timer">Retardateur</string>
+    <string name="ratio">Format</string>
+    <string name="grid">Grille</string>
+    <string name="gallery">Galerie</string>
+    <string name="switch_camera">Changer de caméra</string>
+    <string name="snapshot">Prendre une photo pendant la vidéo</string>
+    <string name="pause">Pause</string>
+    <string name="front_wide">Selfie grand angle</string>
+    <string name="shutter">Déclencheur</string>
+    <string name="permission_denied">L\'accès à la caméra est nécessaire.</string>
+    <string name="photo_saved">Photo enregistrée</string>
+    <string name="error_capture">Erreur de capture : %1$s</string>
+    <string name="error_camera">Impossible d\'ouvrir la caméra</string>
+    <string name="wide_on">Grand angle</string>
+    <string name="wide_off">Recadré</string>
+</resources>
