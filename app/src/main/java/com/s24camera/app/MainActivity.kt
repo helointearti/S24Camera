@@ -88,6 +88,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var btnTimer: TextView
     private lateinit var btnRatio: TextView
     private lateinit var btnGrid: ImageButton
+    private lateinit var btnSound: ImageButton
     private lateinit var recordingIndicator: View
     private lateinit var recDot: View
     private lateinit var recordTime: TextView
@@ -122,6 +123,7 @@ class MainActivity : AppCompatActivity() {
     private var ratio43 = true
     private var gridOn = false
     private var frontWide = true          // selfie grand angle par défaut
+    private var soundOn = true            // son de l'obturateur
     private var mirrorSelfie = true       // enregistre le selfie tel qu'il apparaît à l'écran
 
     private var lastMediaUri: Uri? = null
@@ -235,6 +237,7 @@ class MainActivity : AppCompatActivity() {
         btnTimer = findViewById(R.id.btnTimer)
         btnRatio = findViewById(R.id.btnRatio)
         btnGrid = findViewById(R.id.btnGrid)
+        btnSound = findViewById(R.id.btnSound)
         recordingIndicator = findViewById(R.id.recordingIndicator)
         recDot = findViewById(R.id.recDot)
         recordTime = findViewById(R.id.recordTime)
@@ -283,6 +286,11 @@ class MainActivity : AppCompatActivity() {
                 refreshTopBar()
                 bindCamera()
             }
+        }
+        btnSound.setOnClickListener {
+            soundOn = !soundOn
+            refreshTopBar()
+            Toast.makeText(this, if (soundOn) R.string.sound_on else R.string.sound_off, Toast.LENGTH_SHORT).show()
         }
         btnGrid.setOnClickListener {
             gridOn = !gridOn
@@ -669,7 +677,7 @@ class MainActivity : AppCompatActivity() {
         ic.takePicture(options, cameraExecutor, object : ImageCapture.OnImageSavedCallback {
             override fun onCaptureStarted() {
                 runOnUiThread {
-                    if (!duringVideo) shutterSound.play(MediaActionSound.SHUTTER_CLICK)
+                    if (!duringVideo) playSound(MediaActionSound.SHUTTER_CLICK)
                     blinkEffect()
                     onCaptured?.invoke()
                 }
@@ -731,7 +739,7 @@ class MainActivity : AppCompatActivity() {
         recording = pending.start(ContextCompat.getMainExecutor(this)) { event ->
             when (event) {
                 is VideoRecordEvent.Start -> {
-                    shutterSound.play(MediaActionSound.START_VIDEO_RECORDING)
+                    playSound(MediaActionSound.START_VIDEO_RECORDING)
                     isPaused = false
                     setRecordingUi(true)
                 }
@@ -740,7 +748,7 @@ class MainActivity : AppCompatActivity() {
                 is VideoRecordEvent.Resume -> { isPaused = false; refreshPauseUi() }
                 is VideoRecordEvent.Finalize -> {
                     recording = null
-                    shutterSound.play(MediaActionSound.STOP_VIDEO_RECORDING)
+                    playSound(MediaActionSound.STOP_VIDEO_RECORDING)
                     setRecordingUi(false)
                     if (!event.hasError()) {
                         lastMediaUri = event.outputResults.outputUri
@@ -816,6 +824,7 @@ class MainActivity : AppCompatActivity() {
         btnRatio.text = if (mode == Mode.VIDEO) videoResolutionLabel() else if (ratio43) "3:4" else "9:16"
         btnRatio.alpha = 1f
         btnGrid.alpha = if (gridOn) 1f else 0.5f
+        btnSound.setImageResource(if (soundOn) R.drawable.ic_volume_on else R.drawable.ic_volume_off)
         gridOverlay.visibility = if (gridOn) View.VISIBLE else View.GONE
     }
 
@@ -865,6 +874,11 @@ class MainActivity : AppCompatActivity() {
         if (!isPaused) recDot.alpha = if (total % 2 == 0L) 1f else 0.35f
     }
 
+    /** Joue un son de l'appareil photo, sauf si l'utilisateur l'a coupé. */
+    private fun playSound(sound: Int) {
+        if (soundOn) shutterSound.play(sound)
+    }
+
     private fun blinkEffect() {
         previewView.animate().alpha(0.2f).setDuration(60).withEndAction {
             previewView.animate().alpha(1f).setDuration(120).start()
@@ -878,7 +892,7 @@ class MainActivity : AppCompatActivity() {
             Surface.ROTATION_270 -> -90f
             else -> 0f
         }
-        listOf<View>(btnFlash, btnTimer, btnRatio, btnGrid, galleryThumb, btnSnapshot,
+        listOf<View>(btnFlash, btnTimer, btnRatio, btnGrid, btnSound, galleryThumb, btnSnapshot,
             btnPause, btnFrontWide, btnFrontNormal, countdownText, zoomLabel)
             .plus(zoomChips.map { it.second })
             .forEach { it.animate().rotation(deg).setDuration(250).start() }
@@ -959,6 +973,7 @@ class MainActivity : AppCompatActivity() {
         timerSeconds = prefs.getInt("timer", 0)
         ratio43 = prefs.getBoolean("ratio43", true)
         gridOn = prefs.getBoolean("grid", false)
+        soundOn = prefs.getBoolean("sound", true)
         frontWide = prefs.getBoolean("frontWide", true)
         lensFacing = prefs.getInt("lens", CameraSelector.LENS_FACING_BACK)
     }
@@ -969,6 +984,7 @@ class MainActivity : AppCompatActivity() {
             .putInt("timer", timerSeconds)
             .putBoolean("ratio43", ratio43)
             .putBoolean("grid", gridOn)
+            .putBoolean("sound", soundOn)
             .putBoolean("frontWide", frontWide)
             .putInt("lens", lensFacing)
             .apply()

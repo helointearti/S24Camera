@@ -18,4 +18,7 @@
     <string name="error_camera">Impossible d\'ouvrir la caméra</string>
     <string name="wide_on">Grand angle</string>
     <string name="wide_off">Recadré</string>
+    <string name="shutter_sound">Son de l\'obturateur</string>
+    <string name="sound_on">Son de l\'obturateur activé</string>
+    <string name="sound_off">Son de l\'obturateur désactivé</string>
 </resources>

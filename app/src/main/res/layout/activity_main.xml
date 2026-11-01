@@ -103,6 +103,12 @@
             android:alpha="0.5"
             android:contentDescription="@string/grid"
             android:src="@drawable/ic_grid" />
+
+        <ImageButton
+            android:id="@+id/btnSound"
+            style="@style/TopIcon"
+            android:contentDescription="@string/shutter_sound"
+            android:src="@drawable/ic_volume_on" />
     </LinearLayout>
 
     <!-- Indicateur d'enregistrement -->
