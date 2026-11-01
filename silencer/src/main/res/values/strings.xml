@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Obturateur silencieux</string>
+    <string name="service_label">Obturateur silencieux</string>
+    <string name="service_description">Détecte l\'ouverture d\'une appli photo pour passer le téléphone en silencieux, puis rétablit le son en la quittant. Aucun contenu de l\'écran n\'est lu.</string>
+</resources>

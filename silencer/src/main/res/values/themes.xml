@@ -1,0 +1,6 @@
+<resources>
+    <style name="Theme.Obturateur" parent="Theme.AppCompat.DayNight.DarkActionBar">
+        <item name="colorPrimary">#FF1B1B1F</item>
+        <item name="colorAccent">#FFFFC107</item>
+    </style>
+</resources>

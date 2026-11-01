@@ -34,7 +34,9 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: S24Camera-apk
-          path: app/build/outputs/apk/release/*.apk
+          path: |
+            app/build/outputs/apk/release/*.apk
+            silencer/build/outputs/apk/release/*.apk
 
       # Publie l'APK dans « Releases » (lien de téléchargement direct)
       - name: Publier la release
@@ -42,8 +44,9 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           cp app/build/outputs/apk/release/*.apk S24Camera.apk
+          cp silencer/build/outputs/apk/release/*.apk ObturateurSilencieux.apk
           TAG="build-${{ github.run_number }}"
-          gh release create "$TAG" S24Camera.apk --title "S24 Caméra $TAG" --notes "APK compilé automatiquement." --latest
+          gh release create "$TAG" S24Camera.apk ObturateurSilencieux.apk --title "S24 Caméra $TAG" --notes "APK compilé automatiquement." --latest
 
 permissions:
   contents: write

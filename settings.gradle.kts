@@ -13,4 +13,4 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "S24Camera"
-include(":app")
+include(":app", ":silencer")
